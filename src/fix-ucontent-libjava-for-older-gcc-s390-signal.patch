@@ -1,0 +1,26 @@
+33,35c33,35
+< /* According to the JVM spec, "if the dividend is the negative integer 
+<    of the smallest magnitude and the divisor is -1, then overflow occurs 
+<    and the result is equal to the dividend.  Despite the overflow, no 
+---
+> /* According to the JVM spec, "if the dividend is the negative integer
+>    of the smallest magnitude and the divisor is -1, then overflow occurs
+>    and the result is equal to the dividend.  Despite the overflow, no
+40c40
+<    handler.  This causes execution to continue after the instruction.  
+---
+>    handler.  This causes execution to continue after the instruction.
+54c54
+<     struct ucontext *uc_link;                                           \
+---
+>     ucontext_t *uc_link;                                           \
+274c274
+< while (0)  
+---
+> while (0)
+285c285
+< while (0)  
+---
+> while (0)
+288d287
+< 

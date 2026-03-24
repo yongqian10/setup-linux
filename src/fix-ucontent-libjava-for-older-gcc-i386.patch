@@ -1,0 +1,24 @@
+32c32
+<   struct ucontext *_uc = (struct ucontext *)_p;				\
+---
+>   ucontext_t* _uc = (ucontext_t*)_p; \
+99c99
+< extern "C" 
+---
+> extern "C"
+101c101
+<   struct kernel_sigaction 
+---
+>   struct kernel_sigaction
+139c139
+< while (0)  
+---
+> while (0)
+151c151
+< while (0)  
+---
+> while (0)
+170c170
+<   
+---
+> 

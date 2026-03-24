@@ -1,0 +1,4 @@
+42c42
+< #include <resolv.h>
+---
+> #include "bits/types/res_state.h"

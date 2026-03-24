@@ -1,0 +1,8 @@
+61c61
+<       struct ucontext *uc_ = context->cfa;
+---
+>       ucontext_t *uc_ = context->cfa;
+141c141
+< 	struct ucontext uc;
+---
+> 	ucontext_t uc;
