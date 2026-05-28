@@ -184,7 +184,7 @@ function gcc9env {
 }
 
 function gcc10env {
-    export QTDIR=$TOOL_HOME/qt/6.5.6_gcc102
+    export QTDIR=$TOOL_HOME/qt/6.8.3_gcc102
     export GCCDIR=$TOOL_HOME/gcc/10.2.0
     export CMAKEDIR=$TOOL_HOME/cmake/3.28.3_gcc102
     export TCLDIR=$TOOL_HOME/tcl/8.6.10_gcc102
@@ -192,16 +192,16 @@ function gcc10env {
     export BOOSTDIR=$TOOL_HOME/boost/1.70.0_gcc102
     export SWIG=$TOOL_HOME/swig/3.0.3_gcc102
     export PYTHON3DIR=$TOOL_HOME/python3/3.7.4_gcc102
-    export OPENSSLDIR=$TOOL_HOME/openssl/1.1.1w_gcc102
+    export OPENSSLDIR=$TOOL_HOME/openssl/3.5.6_gcc102
     export LIBUSB1DIR=$TOOL_HOME/libusb/1.0/1.0.27_gcc102
     export LIBUSB0DIR=$TOOL_HOME/libusb/0.1/0.1.12_gcc102
     export QMAKESPEC=$QTDIR/mkspecs/linux-g++
     export NINJADIR=$TOOL_HOME/ninja/1.13.1_gcc102
     export NODEDIR=$TOOL_HOME/node/20.19.5_gcc102
     export PROTODIR=$TOOL_HOME/proto/3.12.4_gcc102
-
-    export LD_LIBRARY_PATH=$GCCDIR/lib64:$OPENSSLDIR/lib:$PYTHON3DIR/lib:$QTDIR/lib:$QTDIR/plugins/platforms:$FOUNDRY/bin/lin64:$TOOLRTF/bin/lin64:$TCLDIR/lib:$NODEDIR/lib:$PROTODIR/lib:$BOOSTDIR/lib:$LIBUSB1DIR/lib:/lib:/usr/lib64:/usr/local/lib64:/usr/local/lib:/usr/lib/x86_64-linux-gnu
-    export PATH=$NINJADIR/bin:$CMAKEDIR/bin:$PYTHON3DIR/bin:$GCCDIR/bin:$QTDIR/bin:$OPENSSLDIR/bin:$TCLDIR/bin:$NODEDIR/bin:$PROTODIR/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/tools/bin:/sbin:/bin:/home/yongqian/.local/bin
+    export PATCHELFDIR=$TOOL_HOME/patchelf/0.18.0_gcc102
+    export LD_LIBRARY_PATH=$GCCDIR/lib64:$OPENSSLDIR/lib64:$PYTHON3DIR/lib:$QTDIR/lib:$QTDIR/plugins/platforms:$FOUNDRY/bin/lin64:$TOOLRTF/bin/lin64:$TCLDIR/lib:$NODEDIR/lib:$PROTODIR/lib:$BOOSTDIR/lib:$LIBUSB1DIR/lib:/lib:/usr/lib64:/usr/local/lib64:/usr/local/lib:/usr/lib/x86_64-linux-gnu
+    export PATH=$PATCHELFDIR/bin:$NINJADIR/bin:$CMAKEDIR/bin:$PYTHON3DIR/bin:$GCCDIR/bin:$QTDIR/bin:$OPENSSLDIR/bin:$TCLDIR/bin:$NODEDIR/bin:$PROTODIR/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/tools/bin:/sbin:/bin:/home/yongqian/.local/bin
     export CC_VER=102
     export CC=gcc
     export CXX=g++
