@@ -1,6 +1,6 @@
 BUILD_GCC11 := false
-BUILD_GCC10 := false
-BUILD_GCC4 := true
+BUILD_GCC10 := true
+BUILD_GCC4 := false
 DOWNLOAD_PREREQUISITES := true
 TOOL_HOME := /home/yongqian/tools/linux_x86_64
 
@@ -27,21 +27,21 @@ ABC_VERSION := master-19.12.25
 YOSYS_VERSION := 0.60
 endif
 
-ifeq ($(BUILD_GCC11),true)
-GCC_VERSION := 11.5.0
-_GCC_VERSION_ := 115
-OPENSSL_VERSION := 1.1.1w
-_OPENSSL_VERSION_ := 1_1_1w
-PYTHON3_VERSION := 3.13.9
+ifeq ($(BUILD_GCC10),true)
+GCC_VERSION := 10.2.0
+_GCC_VERSION_ := 102
+OPENSSL_VERSION := 3.5.6
+_OPENSSL_VERSION_ := 3_5_6
+PYTHON3_VERSION := 3.7.4
 PYTHON2_VERSION := 2.7.10
 LIBUSB1_VERSION :=
 TCL_VERSION := 8.6.10
 BOOST_VERSION := 1.78.0
 _BOOST_VERSION_ := 1_78_0
-QT6_VERSION := 6.5.6
-QT6_VERSION_ := 6.5
-CMAKE_VERSION := 3.31.6
-CMAKE_VERSION_ := 3.31.6
+QT6_VERSION := 6.8.3
+QT6_VERSION_ := 6.8
+CMAKE_VERSION := 3.28.3
+CMAKE_VERSION_ := 3.28
 NINJA_VERSION := 1.13.1
 NODE_VERSION := 20.19.5
 PROTO_VERSION := 3.12.4
@@ -49,7 +49,6 @@ GMOCK_VERSION := 1.17.0
 ABC_VERSION := master-19.12.25
 YOSYS_VERSION := 0.60
 endif
-
 
 GCC_BUILD_PATH := $(TOOL_HOME)/gcc/$(GCC_VERSION)
 OPENSSL_BUILD_PATH := $(TOOL_HOME)/openssl/$(OPENSSL_VERSION)_gcc$(_GCC_VERSION_)
@@ -226,7 +225,7 @@ openssl-lib:
 		echo 'Running OpenSSL build...' ; \
 		cd src && \
 		if [ ! -e openssl-$(OPENSSL_VERSION).tar.gz ]; then \
-			wget https://github.com/openssl/openssl/releases/download/OpenSSL_$(_OPENSSL_VERSION_)/openssl-$(OPENSSL_VERSION).tar.gz ; \
+			wget https://github.com/openssl/openssl/releases/download/openssl-$(OPENSSL_VERSION)/openssl-$(OPENSSL_VERSION).tar.gz ; \
 		fi ; \
 		rm -rf openssl-$(OPENSSL_VERSION) && \
 		tar -xzvf openssl-$(OPENSSL_VERSION).tar.gz && \
@@ -321,7 +320,7 @@ python3.13-lib:
 		export PYTHONHOME='' && \
 		TCLTK_LIBS='-L$(TCL_BUILD_PATH)/lib -ltk8.6 -ltcl8.6' \
 		TCLTK_CFLAGS='-I$(TCL_BUILD_PATH)/include' \
-		OPENSSL_LDFLAGS='-L$(OPENSSL_BUILD_PATH)/lib' \
+		OPENSSL_LDFLAGS='-L$(OPENSSL_BUILD_PATH)/lib64' \
 		OPENSSL_LIBS='-lcrypto -lssl' \
 		OPENSSL_INCLUDES='-I$(OPENSSL_BUILD_PATH)/include' \
 		rm -rf build && \
@@ -330,6 +329,7 @@ python3.13-lib:
 		../configure --prefix=$(PYTHON3_BUILD_PATH) \
 			--enable-shared --with-ensurepip \
 			--enable-optimizations --with-openssl=$(OPENSSL_BUILD_PATH) && \
+		sed -i 's,_LDFLAGS=-L$(OPENSSL_BUILD_PATH)/lib,_LDFLAGS=-L$(OPENSSL_BUILD_PATH)/lib64,g' Makefile && \
 		$(MAKE) -j$(NPROC) && \
 		if [ $$? -eq 0 ]; then \
 			echo 'Make succeeded, running make install...' ; \
@@ -357,9 +357,8 @@ python3.6-lib:
 		mkdir -p Python-$(PYTHON3_VERSION) && \
 		tar -xvf Python-$(PYTHON3_VERSION).tar.xz -C Python-$(PYTHON3_VERSION) --strip-components=1 && \
 		cd Python-$(PYTHON3_VERSION) && \
-		export LD_LIBRARY_PATH=$(OPENSSL_LIB_DIR):$(LD_LIBRARY_PATH):$(TCL_BUILD_PATH)/lib && \
 		export PYTHONHOME='' && \
-		TCLTK_LIBS='-L$(TCL_BUILD_PATH)/lib -ltk8.5 -ltcl8.5' \
+		TCLTK_LIBS='-L$(TCL_BUILD_PATH)/lib -ltk8.6 -ltcl8.6' \
 		TCLTK_CFLAGS='-I$(TCL_BUILD_PATH)/include' \
 		OPENSSL_LDFLAGS='-L$(OPENSSL_BUILD_PATH)/lib' \
 		OPENSSL_LIBS='-lcrypto -lssl' \
@@ -470,6 +469,9 @@ node-lib:
 		fi ; \
 	fi
 
+# patch ./qtwebengine/src/3rdparty/chromium/content/browser/BUILD.gn  < ../fix-qt-spellcheck-buildflags.patch && \
+# python3 -m pip install html5lib
+
 qt6-lib:
 	@ if [ -d $(QT6_BUILD_PATH) ]; then \
 		echo 'Found Qt6 Build Path : $(QT6_BUILD_PATH)' ; \
@@ -478,21 +480,25 @@ qt6-lib:
 		echo 'DID NOT FIND Qt6 Build Path : $(QT6_BUILD_PATH)' ; \
 		echo 'Running Qt6 build...' ; \
 		cd src && \
-		if [ ! -e qt-everywhere-opensource-src-$(QT6_VERSION).tar.xz ]; then \
-			wget https://cdimage.debian.org/mirror/qt.io/qtproject/archive/qt/$(QT6_VERSION_)/$(QT6_VERSION)/src/single/qt-everywhere-opensource-src-$(QT6_VERSION).tar.xz ; \
+		if [ ! -e qt-everywhere-src-$(QT6_VERSION).tar.xz ]; then \
+			wget https://cdimage.debian.org/mirror/qt.io/qtproject/archive/qt/$(QT6_VERSION_)/$(QT6_VERSION)/single/qt-everywhere-src-$(QT6_VERSION).tar.xz ; \
 		fi ; \
 		rm -rf qt-everywhere-src-$(QT6_VERSION) && \
-		tar -xvf qt-everywhere-opensource-src-$(QT6_VERSION).tar.xz && \
+		tar -xvf qt-everywhere-src-$(QT6_VERSION).tar.xz && \
 		cd qt-everywhere-src-$(QT6_VERSION) ; \
-		patch ./qtwebengine/src/3rdparty/chromium/content/browser/BUILD.gn  < ../fix-qt-spellcheck-buildflags.patch && \
 		rm -rf build && \
 		mkdir build && \
 		cd build && \
-		python3 -m pip install html5lib importlib-metadata && \
 		../configure \
 			-prefix $(QT6_BUILD_PATH) \
 			-opensource -confirm-license \
 			-nomake examples -nomake tests \
+			-skip qttools \
+			-skip qtdoc \
+			-skip qttranslations \
+			-skip qtwebengine \
+			-skip qt3d \
+			-no-icu \
 			-openssl-linked OPENSSL_ROOT_DIR=$(OPENSSL_BUILD_PATH) && \
 		$(CMAKE_BUILD_PATH)/bin/cmake --build . --parallel $(NPROC) && \
 		if [ $$? -eq 0 ]; then \
